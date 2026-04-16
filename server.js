@@ -396,34 +396,44 @@ async function buscarDadosEMontarPayload(propostaId) {
 async function criarEObterIdPrecadastro(payload, cpf) {
     const urlPost = `https://${CV_DOMAIN}.cvcrm.com.br/api/v1/comercial/precadastro`;
     const urlGet = `https://${CV_DOMAIN}.cvcrm.com.br/api/v1/comercial/precadastro/${cpf}`;
-    const headers = { "email": CV_EMAIL, "token": CV_TOKEN, "Content-Type": "application/json", "Accept": "application/json" };
+    const headers = { 
+        "email": CV_EMAIL, 
+        "token": CV_TOKEN, 
+        "Content-Type": "application/json", 
+        "Accept": "application/json" 
+    };
 
     try {
+        console.log("🚀 Tentando criar pré-cadastro...");
         try {
-            await axios.post(urlPost, payload, { headers });
+            const resPost = await axios.post(urlPost, payload, { headers });
+            console.log("✅ Resposta do POST:", resPost.data);
         } catch (postError) { 
-            console.log("Aviso: Cadastro já existe ou erro no POST."); 
+            // AQUI ESTÁ O SEGREDO: Vamos ver o erro real do CV
+            console.error("❌ ERRO REAL NO POST DO CV:");
+            console.error(JSON.stringify(postError.response?.data || postError.message, null, 2));
+            // Não interrompemos aqui porque se o erro for "CPF já existe", o GET abaixo deve funcionar.
         }
 
-        console.log("⏳ Aguardando sincronização CV...");
-        await sleep(4000); 
+        console.log(`⏳ Aguardando sincronização para o CPF: ${cpf}...`);
+        await sleep(5000); // Aumentei para 5 segundos para garantir
 
         const resGet = await axios.get(urlGet, { headers });
         if (resGet.status === 200 && resGet.data) {
             const lista = resGet.data.precadastros || [];
             if (lista.length > 0) {
                 lista.sort((a, b) => new Date(b.data_cad) - new Date(a.data_cad));
-                
-                // RETORNA OS DOIS IDS
                 return { 
                     idCv: lista[0].idprecadastro, 
-                    idPessoa: lista[0].idpessoa // <--- Captura o idpessoa retornado pelo CV
+                    idPessoa: lista[0].idpessoa 
                 };
             }
         }
+        
+        console.error("⚠️ O GET retornou sucesso, mas a lista de cadastros veio vazia.");
         return null;
     } catch (err) {
-        console.error("Erro CV:", err.response?.data || err.message);
+        console.error("❌ Erro fatal na comunicação com CV:", err.response?.data || err.message);
         return null;
     }
 }
