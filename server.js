@@ -297,7 +297,7 @@ const db = admin.firestore();
 const CV_DOMAIN = "lcm";
 const CV_EMAIL = "iasmin.fernandes@lcmconstrucao.com.br";
 const CV_TOKEN = "8448ba5c8e53867a8665bb6e10cbb39b8ccdc922";
-
+console.log('teste')
 const MAPA_DOCUMENTOS = {
     "extrato":        { id: 4,  label: "Extrato" },
     "certidao":       { id: 5,  label: "Certidão" },
