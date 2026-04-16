@@ -3,7 +3,7 @@ const cors = require('cors');
 const admin = require('firebase-admin');
 const axios = require('axios');
 const serviceAccount = require('./key.json');
-
+require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -11,11 +11,11 @@ app.use(express.json());
 if (!admin.apps.length) {
     admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 }
-const db = admin.firestore();
+// Importa as variáveis de ambiente (útil para rodar localmente depois)
 
-const CV_DOMAIN = "lcm";
-const CV_EMAIL = "iasmin.fernandes@lcmconstrucao.com.br";
-const CV_TOKEN = "8448ba5c8e53867a8665bb6e10cbb39b8ccdc922";
+const CV_DOMAIN = process.env.CV_DOMAIN;
+const CV_EMAIL = process.env.CV_EMAIL;
+const CV_TOKEN = process.env.CV_TOKEN;
 
 const MAPA_DOCUMENTOS = {
     "extrato": 4, "certidao": 5, "holerite": 6, "auto_renda": 6,
