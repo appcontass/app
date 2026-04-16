@@ -11,8 +11,11 @@ app.use(express.json());
 if (!admin.apps.length) {
     admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 }
-// Importa as variáveis de ambiente (útil para rodar localmente depois)
 
+// 👉 ADICIONE ESTA LINHA AQUI:
+const db = admin.firestore();
+
+// Importa as variáveis de ambiente (útil para rodar localmente depois)
 const CV_DOMAIN = process.env.CV_DOMAIN;
 const CV_EMAIL = process.env.CV_EMAIL;
 const CV_TOKEN = process.env.CV_TOKEN;
