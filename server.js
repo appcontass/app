@@ -58,12 +58,6 @@ async function buscarDadosEMontarPayload(propostaId) {
     // 🕵️ SOLUÇÃO PARA O ERRO DE EMAIL VAZIO
     // Busca em 3 níveis: dados_pessoais -> main -> raiz do documento
     let userEmail = (dadosPessoais.email || main.email || dadosFb.email || "").trim();
-    
-    // Se ainda estiver vazio, usamos um e-mail de fallback para não travar o cadastro
-    if (!userEmail) {
-        userEmail = `cliente_${limparFormatacao(dadosPessoais.cpf || "semcpf")}@lcm.com.br`;
-        console.log(`⚠️ Email não encontrado. Usando fallback: ${userEmail}`);
-    }
 
     let rendaTotal = 0.0;
     for (const key in entidades) {
